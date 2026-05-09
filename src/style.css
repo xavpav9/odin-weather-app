@@ -25,11 +25,78 @@ body {
   }
 }
 
+button, select {
+  cursor: pointer;
+}
+
 div.options {
   grid-row: 1 / 3;
   background-color: #f2f2ff;
   border-bottom: 2px solid black;
   border-right: 2px solid black;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  form {
+    display: grid;
+    grid-template: 2fr 1fr 2fr / 1fr;
+    row-gap: 20px;
+
+    label {
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    #location {
+      appearance: none;
+      border: thin solid black;
+      padding: 0.2rem;
+      font-family: "Arial", sans-serif, system-ui;
+
+      &:focus {
+        outline: 2px solid blue;
+      }
+    }
+
+    #temp-type {
+      appearance: base-select;
+      border: 2px outset green;
+      border-radius: 1px;
+      background-color: #90ee90;
+      padding: 0.2rem;
+      transition: background-color 1s;
+
+      &:hover {
+        background-color: #80de80;
+      }
+    }
+
+    .location, .temp-type {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      button.submit {
+        padding: 4px 8px;
+        background-color: #add8e6;
+        border: 2px outset blue;
+        transition: background-color 1s;
+
+        &:hover {
+          background-color: #9dc8d6;
+        }
+      }
+    }
+  }
 
 }
 

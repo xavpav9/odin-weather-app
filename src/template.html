@@ -10,8 +10,20 @@
     <div class="options">
       <h1>Weather App</h1>
       <form method="" action="">
-        <input type="text" name="location" id="location">
-        <button class="submit">Submit</button>
+        <div class="location">
+          <label for="temp-type">Location: </label>
+          <input type="text" name="location" id="location">
+        </div>
+        <div class="buttons">
+          <button class="submit">Submit</button>
+        </div>
+        <div class="temp-type">
+          <label for="temp-type">Temperature Type: </label>
+          <select name="temp-type" id="temp-type">
+            <option value="fahrenheit">Fahrenheit</option>
+            <option value="celsius">Celsius</option>
+          </select>
+        </div>
       </form>
     </div>
     <div class="day-scroller">
