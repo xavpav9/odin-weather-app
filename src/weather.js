@@ -42,6 +42,15 @@ function processWeatherData(data) {
         winddir: day.winddir,
 
         icon: day.icon,
+
+        hours: day.hours.map((hour) => {
+          return {
+            datetime: hour.datetime,
+            temp: hour.temp,
+            windspeed: hour.windspeed,
+            winddir: hour.winddir,
+          }
+        }),
       };
     }),
   };
