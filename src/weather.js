@@ -1,6 +1,8 @@
 async function retrieveWeatherData(location) {
-  let response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=87SUCVV2HUAUN4VRLYF4A6QVC`);
-  let data = response.json();
+  const response = await fetch(
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=87SUCVV2HUAUN4VRLYF4A6QVC`
+  );
+  const data = response.json();
   return data;
 }
 
@@ -24,7 +26,7 @@ function processWeatherData(data) {
 
       icon: data.currentConditions.icon,
     },
-    forecast: data.days.map(day => {
+    forecast: data.days.map((day) => {
       return {
         description: day.description,
         temp: day.temp,
@@ -40,9 +42,9 @@ function processWeatherData(data) {
         winddir: day.winddir,
 
         icon: day.icon,
-      }
+      };
     }),
-  }
+  };
 }
 
-export { retrieveWeatherData, processWeatherData, };
+export { retrieveWeatherData, processWeatherData };

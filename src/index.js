@@ -1,8 +1,23 @@
 import "./style.css";
-import {retrieveWeatherData, processWeatherData} from "./weather.js";
+import { retrieveWeatherData, processWeatherData } from "./weather.js";
 
-retrieveWeatherData("london").then(data => {
-  console.log(data);
-  console.log(processWeatherData(data));
+const formHandler = (function () {
+  const locationInput = document.querySelector("#location");
+
+  function getWeatherData() {
+    const promise = retrieveWeatherData(locationInput.value).then((data) => {
+      const processedData = processWeatherData(data);
+      return processedData;
+    });
+    return promise;
+  }
+
+  return { getWeatherData };
+})();
+
+document.querySelector("button.submit").addEventListener("click", (evt) => {
+  evt.preventDefault();
+  formHandler.getWeatherData().then((data) => {
+    console.log(data);
+  });
 });
-
