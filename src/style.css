@@ -120,9 +120,14 @@ div.day-scroller {
       width: 100px;
       height: 100%;
       padding: 5px;
+      cursor: pointer;
 
       display: grid;
       grid-template: repeat(4, 1fr) / 1fr;
+
+      &.selected {
+        background-color: #1f1;
+      }
 
       img, .date {
         justify-self: center;
@@ -164,4 +169,57 @@ div.now {
 div.selected-day {
   grid-row: 2 / 4;
   background-color: #fafffa;
+
+  & > div {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template: 1fr / 3fr 1fr;
+    column-gap: 20px;
+
+    .hours {
+      display: grid;
+      grid-template: 1fr 1fr / 1fr;
+      border: 2px solid black;
+
+      .am-hours, .pm-hours {
+        display: flex;
+
+        .hour {
+          display: grid;
+          grid-template: 2fr repeat(4, 1fr) / 1fr;
+          place-items: center;
+          flex: 1 0 0px;
+
+          padding: 2px;
+          background-color: white;
+
+          img {
+            height: 30px;
+          }
+
+          .time {
+            font-weight: 700;
+          }
+        }
+
+        .hour + .hour {
+          border-left: thin solid black;
+        }
+      }
+
+      .am-hours { 
+        .hour {
+          border-bottom: thin solid black;
+        }
+      }
+      .pm-hours { }
+    }
+
+    .hour-info {
+      border: 2px solid blue;
+      grid-area: 1 / 2 / 3 / 3;
+
+    }
+  }
 }

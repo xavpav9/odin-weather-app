@@ -50,6 +50,8 @@ function processWeatherData(data) {
             temp: hour.temp,
             windspeed: hour.windspeed,
             winddir: hour.winddir,
+
+            icon: hour.icon,
           }
         }),
       };
