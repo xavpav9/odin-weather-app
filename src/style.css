@@ -119,6 +119,34 @@ div.day-scroller {
       flex: 0 0 auto;
       width: 100px;
       height: 100%;
+      padding: 5px;
+
+      display: grid;
+      grid-template: repeat(4, 1fr) / 1fr;
+
+      img, .date {
+        justify-self: center;
+      }
+
+      img {
+        height: 30px;
+      }
+
+      .date {
+        font-weight: 700;
+      }
+
+      .temp {
+        justify-self: end;
+
+        &.high {
+          color: #500;
+        }
+
+        &.low {
+          color: #005;
+        }
+      }
     }
 
     div.day + div.day {

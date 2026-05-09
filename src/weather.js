@@ -28,6 +28,7 @@ function processWeatherData(data) {
     },
     forecast: data.days.map((day) => {
       return {
+        datetime: day.datetime,
         description: day.description,
         temp: day.temp,
         tempmin: day.tempmin,
