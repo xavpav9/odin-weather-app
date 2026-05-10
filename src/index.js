@@ -178,6 +178,8 @@ const displayHandler = (function() {
       temp.classList.add("temp");
       winddir.classList.add("winddir");
 
+      winddir.setAttribute("title", "wind direction");
+
       temp.textContent = getUnitsString("temperature", hour.temp);
       winddir.textContent = convertToCompassDirection(hour.winddir);
       time.textContent = hour.datetime.split(":").slice(0, 2).join(":");
@@ -299,24 +301,4 @@ document.querySelector("button.submit").addEventListener("click", (evt) => {
     displayHandler.currentDayData = data.forecast;
     displayHandler.displayDataToScroller(data.forecast);
   });
-});
-
-document.querySelector("#temp-type").addEventListener("change", (evt) => {
-  if (displayHandler.currentDayData.length > 0) {
-    const daySelected = [...document.querySelector("div.day-scroller > div").children].findIndex(child => {
-      return child.classList.contains("selected");
-    });
-
-    let hourSelected = [...document.querySelector("div.am-hours").children].findIndex(child => {
-      return child.classList.contains("selected");
-    });
-    if (hourSelected === -1) {
-      hourSelected = [...document.querySelector("div.pm-hours").children].findIndex(child => {
-        return child.classList.contains("selected");
-      });
-      if (hourSelected !== -1) hourSelected += 12;
-    };
-
-    displayHandler.displayDataToScroller(displayHandler.currentDayData, daySelected, hourSelected);
-  }
 });
