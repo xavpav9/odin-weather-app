@@ -115,7 +115,7 @@ div.day-scroller {
     overflow-x: scroll;
     border: 2px solid black;
 
-    div.day {
+    button.day {
       flex: 0 0 auto;
       width: 100px;
       height: 100%;
@@ -150,15 +150,19 @@ div.day-scroller {
       }
     }
 
-    div.day + div.day {
+    button.day + button.day {
       border-left: 2px solid black;
     }
   }
 }
 
-div.hour, div.day {
+button.hour, button.day {
+  border: none;
+  background-color: white;
   transition: background-color 0.1s;
-  &:hover { background-color: #efe }
+
+  &:hover, &:focus { background-color: #efe; }
+  &:focus { outline: none; }
   &.selected { background-color: #afa; }
 }
 
@@ -189,7 +193,7 @@ div.selected-day {
         display: flex;
         background-color: white;
 
-        .hour {
+        button.hour {
           display: grid;
           grid-template: 2fr repeat(4, 1fr) / 1fr;
           place-items: center;

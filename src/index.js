@@ -104,13 +104,13 @@ const displayHandler = (function() {
     displaySideBarAddress(dayData[0].address);
 
     dayData.forEach((day, index) => {
-      const div = document.createElement("div");
+      const btn = document.createElement("button");
       const icon = document.createElement("img");
       const date = document.createElement("div");
       const maxTemp = document.createElement("div");
       const minTemp = document.createElement("div");
 
-      div.classList.add("day");
+      btn.classList.add("day");
 
       date.classList.add("date");
 
@@ -133,33 +133,33 @@ const displayHandler = (function() {
         icon.src = image.default;
       });
 
-      div.addEventListener("click", evt => {
-        if (div.classList.contains("selected")) {
+      btn.addEventListener("click", evt => {
+        if (btn.classList.contains("selected")) {
           [...amHours.children].forEach(child => child.remove());
           [...pmHours.children].forEach(child => child.remove());
           [...sidebar.children].forEach(child => child.remove());
           displaySideBarAddress(day.address);
-          div.classList.remove("selected");
+          btn.classList.remove("selected");
         } else {
           [...dayScroller.children].forEach(child => child.classList.remove("selected"));
-          div.classList.add("selected");
+          btn.classList.add("selected");
           displayDataToSidebar(day, true);
           displayDataToHourly(day);
         }
       });
 
       if (index === daySelected) {
-        div.classList.add("selected");
+        btn.classList.add("selected");
         displayDataToSidebar(day, true);
         displayDataToHourly(day, hourSelected);
       }
 
-      div.appendChild(icon);
-      div.appendChild(date);
-      div.appendChild(maxTemp);
-      div.appendChild(minTemp);
+      btn.appendChild(icon);
+      btn.appendChild(date);
+      btn.appendChild(maxTemp);
+      btn.appendChild(minTemp);
 
-      dayScroller.appendChild(div);
+      dayScroller.appendChild(btn);
     });
   }
 
@@ -167,13 +167,13 @@ const displayHandler = (function() {
     [...amHours.children].forEach(child => child.remove());
     [...pmHours.children].forEach(child => child.remove());
     day.hours.forEach((hour, index) => {
-      const div = document.createElement("div");
+      const btn = document.createElement("button");
       const icon = document.createElement("img");
       const time = document.createElement("div");
       const temp = document.createElement("div");
       const winddir = document.createElement("div");
 
-      div.classList.add("hour");
+      btn.classList.add("hour");
       time.classList.add("time");
       temp.classList.add("temp");
       winddir.classList.add("winddir");
@@ -188,30 +188,30 @@ const displayHandler = (function() {
         icon.src = image.default;
       });
 
-      div.addEventListener("click", evt => {
-        if (div.classList.contains("selected")) {
+      btn.addEventListener("click", evt => {
+        if (btn.classList.contains("selected")) {
           displayDataToSidebar(day, true);
-          div.classList.remove("selected");
+          btn.classList.remove("selected");
         } else {
           [...amHours.children].forEach(child => child.classList.remove("selected"));
           [...pmHours.children].forEach(child => child.classList.remove("selected"));
-          div.classList.add("selected");
+          btn.classList.add("selected");
           displayDataToSidebar(hour);
         }
       });
 
       if (hourSelected === index) {
-        div.classList.add("selected");
+        btn.classList.add("selected");
         displayDataToSidebar(hour);
       }
 
-      div.appendChild(icon);
-      div.appendChild(time);
-      div.appendChild(temp);
-      div.appendChild(winddir);
+      btn.appendChild(icon);
+      btn.appendChild(time);
+      btn.appendChild(temp);
+      btn.appendChild(winddir);
 
-      if (index < 12) amHours.appendChild(div);
-      else pmHours.appendChild(div);
+      if (index < 12) amHours.appendChild(btn);
+      else pmHours.appendChild(btn);
     });
   }
 
