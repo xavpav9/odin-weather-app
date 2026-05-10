@@ -15,6 +15,7 @@ function processWeatherData(data) {
     now: {
       temp: data.currentConditions.temp,
       feelslike: data.currentConditions.feelslike,
+      precipprob: data.currentConditions.precipprob,
       conditions: data.currentConditions.conditions,
       snow: data.currentConditions.snow,
       visibility: data.currentConditions.visibility,
@@ -35,6 +36,7 @@ function processWeatherData(data) {
         tempmin: day.tempmin,
         tempmax: day.tempmax,
         feelslike: day.feelslike,
+        precipprob: day.precipprob,
         conditions: day.conditions,
         snow: day.snow,
         visibility: day.visibility,
@@ -53,6 +55,7 @@ function processWeatherData(data) {
             address: data.resolvedAddress,
             datetime: hour.datetime,
             temp: hour.temp,
+            precipprob: hour.precipprob,
             windspeed: hour.windspeed,
             winddir: hour.winddir,
             feelslike: hour.feelslike,

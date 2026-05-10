@@ -37,7 +37,8 @@ const displayHandler = (function() {
         else if (system === "base") unit = "K";
         break;
       case "snow":
-        unit = "cm";
+        if (system === "us") unit = "inches";
+        else unit = "cm";
         break;
       case "windspeed":
         if (system === "us" || system == "uk") unit = "mph";
@@ -52,6 +53,7 @@ const displayHandler = (function() {
         break;
       case "cloudcover":
       case "humidity":
+      case "precipitationprob":
         unit = "%";
         break;
     }
@@ -216,6 +218,7 @@ const displayHandler = (function() {
     const statistics = document.createElement("div");
     const temp = document.createElement("div");
     const feelslike = document.createElement("div");
+    const precipitationProb = document.createElement("div");
     const snow = document.createElement("div");
     const pressure = document.createElement("div");
     const humidity = document.createElement("div");
@@ -225,22 +228,25 @@ const displayHandler = (function() {
     statistics.classList.add("statistics");
     temp.classList.add("temp");
     feelslike.classList.add("feelslike");
+    precipitationProb.classList.add("feelslike");
     snow.classList.add("snow");
     pressure.classList.add("pressure");
     humidity.classList.add("humidity");
     windspeed.classList.add("windspeed");
     cloudcover.classList.add("cloudcover");
 
-    temp.textContent = `Temperature: ${getUnitsString("temperature", data.temp)}`;
-    feelslike.textContent = `Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
-    snow.textContent = `Snow: ${getUnitsString("snow", data.snow)}`;
+    temp.textContent = `🌡️ Temperature: ${getUnitsString("temperature", data.temp)}`;
+    feelslike.textContent = `🌡️ Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
+    precipitationProb.textContent = `🌧️ Precipitation: ${getUnitsString("precipitationprob", data.precipprob)}`;
+    snow.textContent = `🌨️ Snow: ${getUnitsString("snow", data.snow)}`;
     pressure.textContent = `Pressure: ${getUnitsString("pressure", data.pressure)}`;
     humidity.textContent = `Humidity: ${getUnitsString("humidity", data.humidity)}`;
-    windspeed.textContent = `Windspeed: ${getUnitsString("windspeed", data.windspeed)}`;
-    cloudcover.textContent = `Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
+    windspeed.textContent = `🍃 Windspeed: ${getUnitsString("windspeed", data.windspeed)}`;
+    cloudcover.textContent = `☁️ Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
 
     statistics.appendChild(temp);
     statistics.appendChild(feelslike);
+    statistics.appendChild(precipitationProb);
     statistics.appendChild(pressure);
     statistics.appendChild(humidity);
     statistics.appendChild(windspeed);
@@ -258,15 +264,15 @@ const displayHandler = (function() {
 
       const visibility = document.createElement("div");
       visibility.classList.add("visibility");
-      visibility.textContent = `Visibility: ${getUnitsString("visibility", data.visibility)}`;
+      visibility.textContent = `🌇 Visibility: ${getUnitsString("visibility", data.visibility)}`;
       statistics.insertBefore(visibility, windspeed);
 
       const sunrise = document.createElement("div");
       const sunset = document.createElement("div");
       sunrise.classList.add("sunrise");
       sunset.classList.add("sunset");
-      sunrise.textContent = `Sunrise: ${data.sunrise}`;
-      sunset.textContent = `Sunset: ${data.sunset}`;
+      sunrise.textContent = `🌄 Sunrise: ${data.sunrise}`;
+      sunset.textContent = `🌇 Sunset: ${data.sunset}`;
       statistics.appendChild(sunrise);
       statistics.appendChild(sunset);
     } else {
@@ -284,6 +290,7 @@ const displayHandler = (function() {
 
 document.querySelector("button.submit").addEventListener("click", (evt) => {
   evt.preventDefault();
+  [...document.querySelector(".day-scroller > div").children].forEach(child => child.remove());
   [...document.querySelector(".am-hours").children].forEach(child => child.remove());
   [...document.querySelector(".pm-hours").children].forEach(child => child.remove());
   [...document.querySelector(".hour-info").children].forEach(child => child.remove());
