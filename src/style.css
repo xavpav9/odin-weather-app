@@ -180,7 +180,7 @@ div.selected-day {
     .hours {
       display: grid;
       grid-template: 1fr 1fr / 1fr;
-      border: 2px solid black;
+      border: 2px outset black;
 
       .am-hours, .pm-hours {
         display: flex;
@@ -223,10 +223,23 @@ div.selected-day {
 
     .hour-info {
       display: grid;
-      grid-template: 5fr 4fr 30fr / 1fr;
+      grid-template: 6fr 4fr 30fr / 1fr;
 
-      border: 2px solid blue;
+      border: 2px outset black;
       grid-area: 1 / 2 / 3 / 3;
+
+      .address {
+        padding: 0px 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:hover {
+          white-space: wrap;
+          overflow: auto;
+          scrollbar-color: blue transparent;
+        }
+      }
 
       .address, .description, .time {
         text-align: center;

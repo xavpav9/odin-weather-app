@@ -64,8 +64,19 @@ const displayHandler = (function() {
     else return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.floor((degrees + 22.5) / 45)];
   }
 
+  function displaySideBarAddress(address) {
+    [...sidebar.children].forEach(child => child.remove());
+    const h3 = document.createElement("h3");
+    h3.classList.add("address");
+    h3.textContent = address.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
+    sidebar.appendChild(h3);
+  }
+
   function displayDataToScroller(dayData, daySelected=-1, hourSelected=-1) {
     [...dayScroller.children].forEach(child => child.remove());
+
+    displaySideBarAddress(dayData[0].address);
+
     dayData.forEach((day, index) => {
       const div = document.createElement("div");
       const icon = document.createElement("img");
@@ -101,6 +112,7 @@ const displayHandler = (function() {
           [...amHours.children].forEach(child => child.remove());
           [...pmHours.children].forEach(child => child.remove());
           [...sidebar.children].forEach(child => child.remove());
+          displaySideBarAddress(day.address);
           div.classList.remove("selected");
         } else {
           [...dayScroller.children].forEach(child => child.classList.remove("selected"));
@@ -177,7 +189,6 @@ const displayHandler = (function() {
 
   function displayDataToSidebar(data, general=false) {
     [...sidebar.children].forEach(child => child.remove());
-    const h2 = document.createElement("h2");
     const statistics = document.createElement("div");
     const temp = document.createElement("div");
     const feelslike = document.createElement("div");
@@ -187,7 +198,6 @@ const displayHandler = (function() {
     const windspeed = document.createElement("div");
     const cloudcover = document.createElement("div");
 
-    h2.classList.add("address");
     statistics.classList.add("statistics");
     temp.classList.add("temp");
     feelslike.classList.add("feelslike");
@@ -197,7 +207,6 @@ const displayHandler = (function() {
     windspeed.classList.add("windspeed");
     cloudcover.classList.add("cloudcover");
 
-    h2.textContent = data.address.split(" ")[0].split(",")[0][0].toUpperCase() + data.address.split(" ")[0].split(",")[0].slice(1); // Just first word for now.
     temp.textContent = `Temperature: ${getTempString(tempType.value, data.temp)}`;
     feelslike.textContent = `Feels Like: ${getTempString(tempType.value, data.feelslike)}`;
     snow.textContent = `Snow: ${data.snow}`;
@@ -214,7 +223,7 @@ const displayHandler = (function() {
     statistics.appendChild(cloudcover);
     statistics.appendChild(snow);
 
-    sidebar.appendChild(h2);
+    displaySideBarAddress(data.address);
 
 
     if (general) {
