@@ -1,6 +1,6 @@
-async function retrieveWeatherData(location) {
+async function retrieveWeatherData(location, units) {
   const response = await fetch(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=87SUCVV2HUAUN4VRLYF4A6QVC`
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=87SUCVV2HUAUN4VRLYF4A6QVC&unitGroup=${units}`
   );
   const data = response.json();
   return data;

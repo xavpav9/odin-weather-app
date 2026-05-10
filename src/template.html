@@ -14,15 +14,17 @@
           <label for="temp-type">Location: </label>
           <input type="text" name="location" id="location">
         </div>
+        <div class="unit-type">
+          <label for="unit-type">Unit Type: </label>
+          <select name="unit-type" id="unit-type">
+            <option value="uk">UK</option>
+            <option value="metric">Metric</option>
+            <option value="us">US</option>
+            <option value="base">Base/SI units</option>
+          </select>
+        </div>
         <div class="buttons">
           <button class="submit">Submit</button>
-        </div>
-        <div class="temp-type">
-          <label for="temp-type">Temperature Type: </label>
-          <select name="temp-type" id="temp-type">
-            <option value="fahrenheit">Fahrenheit</option>
-            <option value="celsius">Celsius</option>
-          </select>
         </div>
       </form>
     </div>

@@ -3,11 +3,12 @@ import { retrieveWeatherData, processWeatherData } from "./weather.js";
 
 const formHandler = (function () {
   const locationInput = document.querySelector("#location");
+  const unitInput = document.querySelector("#unit-type");
   const submitBtn = document.querySelector("button.submit");
 
   function getWeatherData() {
     submitBtn.setAttribute("disabled", true);
-    const promise = retrieveWeatherData(locationInput.value).then((data) => {
+    const promise = retrieveWeatherData(locationInput.value, unitInput.value).then((data) => {
       const processedData = processWeatherData(data);
       return processedData;
     });
@@ -20,18 +21,41 @@ const formHandler = (function () {
 
 const displayHandler = (function() {
   const dayScroller = document.querySelector("div.day-scroller > div");
-  const tempType = document.querySelector("#temp-type");
+  const unitType = document.querySelector("#unit-type");
   const amHours = document.querySelector(".am-hours");
   const pmHours = document.querySelector(".pm-hours");
   const sidebar = document.querySelector(".hour-info");
   let currentDayData = [];
 
-  function getTempString(tempTypeValue, temp) { // temp should be in Fahrenheit
-    if (tempTypeValue == "fahrenheit") {
-      return `${temp.toFixed(1)} °F`;
-    } else {
-      return `${((temp-32)*5/9).toFixed(1)} °C`;
+  function getUnitsString(name, measurement) {
+    const system = unitType.value;
+    let unit = "";
+    switch (name) {
+      case "temperature":
+        if (system === "us") unit = "°F";
+        else if (system === "uk" || system === "metric") unit = "°C";
+        else if (system === "base") unit = "K";
+        break;
+      case "snow":
+        unit = "cm";
+        break;
+      case "windspeed":
+        if (system === "us" || system == "uk") unit = "mph";
+        else if (system === "base" || system === "metric") unit = "m/s";
+        break;
+      case "visibility":
+        if (system === "us" || system == "uk") unit = "miles";
+        else if (system === "base" || system === "metric") unit = "km";
+        break;
+      case "pressure":
+        unit = "Millibars";
+        break;
+      case "cloudcover":
+      case "humidity":
+        unit = "%";
+        break;
     }
+    return `${measurement.toFixed(1)} ${unit}`;
   }
 
   function getDateString(datetime) {
@@ -100,8 +124,8 @@ const displayHandler = (function() {
       const datetime = new Date(day.datetime);
       date.textContent = getDateString(datetime);
 
-      minTemp.textContent = getTempString(tempType.value, day.tempmin)
-      maxTemp.textContent = getTempString(tempType.value, day.tempmax);
+      minTemp.textContent = getUnitsString("temperature", day.tempmin)
+      maxTemp.textContent = getUnitsString("temperature", day.tempmax);
 
       import(`./images/${day.icon}.svg`).then(image => {
         icon.src = image.default;
@@ -152,7 +176,7 @@ const displayHandler = (function() {
       temp.classList.add("temp");
       winddir.classList.add("winddir");
 
-      temp.textContent = getTempString(tempType.value, hour.temp);
+      temp.textContent = getUnitsString("temperature", hour.temp);
       winddir.textContent = convertToCompassDirection(hour.winddir);
       time.textContent = hour.datetime.split(":").slice(0, 2).join(":");
 
@@ -207,13 +231,13 @@ const displayHandler = (function() {
     windspeed.classList.add("windspeed");
     cloudcover.classList.add("cloudcover");
 
-    temp.textContent = `Temperature: ${getTempString(tempType.value, data.temp)}`;
-    feelslike.textContent = `Feels Like: ${getTempString(tempType.value, data.feelslike)}`;
-    snow.textContent = `Snow: ${data.snow}`;
-    pressure.textContent = `Pressure: ${data.pressure}`;
-    humidity.textContent = `Humidity: ${data.humidity}`;
-    windspeed.textContent = `Windspeed: ${data.windspeed}`;
-    cloudcover.textContent = `Cloudcover: ${data.cloudcover}`;
+    temp.textContent = `Temperature: ${getUnitsString("temperature", data.temp)}`;
+    feelslike.textContent = `Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
+    snow.textContent = `Snow: ${getUnitsString("snow", data.snow)}`;
+    pressure.textContent = `Pressure: ${getUnitsString("pressure", data.pressure)}`;
+    humidity.textContent = `Humidity: ${getUnitsString("humidity", data.humidity)}`;
+    windspeed.textContent = `Windspeed: ${getUnitsString("windspeed", data.windspeed)}`;
+    cloudcover.textContent = `Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
 
     statistics.appendChild(temp);
     statistics.appendChild(feelslike);
@@ -234,7 +258,7 @@ const displayHandler = (function() {
 
       const visibility = document.createElement("div");
       visibility.classList.add("visibility");
-      visibility.textContent = `Visibility: ${data.visibility}`;
+      visibility.textContent = `Visibility: ${getUnitsString("visibility", data.visibility)}`;
       statistics.insertBefore(visibility, windspeed);
 
       const sunrise = document.createElement("div");
