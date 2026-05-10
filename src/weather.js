@@ -28,14 +28,18 @@ function processWeatherData(data) {
     },
     forecast: data.days.map((day) => {
       return {
+        address: data.resolvedAddress,
         datetime: day.datetime,
         description: day.description,
         temp: day.temp,
         tempmin: day.tempmin,
         tempmax: day.tempmax,
+        feelslike: day.feelslike,
         conditions: day.conditions,
         snow: day.snow,
         visibility: day.visibility,
+        pressure: day.pressure,
+        humidity: day.humidity,
         windspeed: day.windspeed,
         cloudcover: day.cloudcover,
         sunrise: day.sunrise,
@@ -46,10 +50,16 @@ function processWeatherData(data) {
 
         hours: day.hours.map((hour) => {
           return {
+            address: data.resolvedAddress,
             datetime: hour.datetime,
             temp: hour.temp,
             windspeed: hour.windspeed,
             winddir: hour.winddir,
+            feelslike: hour.feelslike,
+            pressure: hour.pressure,
+            humidity: hour.humidity,
+            snow: hour.snow,
+            cloudcover: hour.cloudcover,
 
             icon: hour.icon,
           }
