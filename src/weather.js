@@ -13,16 +13,13 @@ function processWeatherData(data) {
     longitude: data.longitude,
     description: data.description,
     now: {
+      time: data.currentConditions.datetime,
       temp: data.currentConditions.temp,
       feelslike: data.currentConditions.feelslike,
       precipprob: data.currentConditions.precipprob,
       conditions: data.currentConditions.conditions,
-      snow: data.currentConditions.snow,
-      visibility: data.currentConditions.visibility,
       windspeed: data.currentConditions.windspeed,
       cloudcover: data.currentConditions.cloudcover,
-      sunrise: data.currentConditions.sunrise,
-      sunset: data.currentConditions.sunset,
       winddir: data.currentConditions.winddir,
 
       icon: data.currentConditions.icon,

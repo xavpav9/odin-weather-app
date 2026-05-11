@@ -25,6 +25,7 @@ const displayHandler = (function() {
   const amHours = document.querySelector(".am-hours");
   const pmHours = document.querySelector(".pm-hours");
   const sidebar = document.querySelector(".hour-info");
+  const now = document.querySelector(".now");
   let currentDayData = [];
 
   function getUnitsString(name, measurement) {
@@ -230,21 +231,21 @@ const displayHandler = (function() {
     statistics.classList.add("statistics");
     temp.classList.add("temp");
     feelslike.classList.add("feelslike");
-    precipitationProb.classList.add("feelslike");
+    precipitationProb.classList.add("precipitation-prob");
     snow.classList.add("snow");
     pressure.classList.add("pressure");
     humidity.classList.add("humidity");
     windspeed.classList.add("windspeed");
     cloudcover.classList.add("cloudcover");
 
-    temp.textContent = `🌡️ Temperature: ${getUnitsString("temperature", data.temp)}`;
-    feelslike.textContent = `🌡️ Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
-    precipitationProb.textContent = `🌧️ Precipitation: ${getUnitsString("precipitationprob", data.precipprob)}`;
-    snow.textContent = `🌨️ Snow: ${getUnitsString("snow", data.snow)}`;
+    temp.textContent = `Temperature: ${getUnitsString("temperature", data.temp)}`;
+    feelslike.textContent = `Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
+    precipitationProb.textContent = `Precipitation: ${getUnitsString("precipitationprob", data.precipprob)}`;
+    snow.textContent = `Snow: ${getUnitsString("snow", data.snow)}`;
     pressure.textContent = `Pressure: ${getUnitsString("pressure", data.pressure)}`;
     humidity.textContent = `Humidity: ${getUnitsString("humidity", data.humidity)}`;
-    windspeed.textContent = `🍃 Windspeed: ${getUnitsString("windspeed", data.windspeed)}`;
-    cloudcover.textContent = `☁️ Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
+    windspeed.textContent = `Windspeed: ${getUnitsString("windspeed", data.windspeed)}`;
+    cloudcover.textContent = `Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
 
     statistics.appendChild(temp);
     statistics.appendChild(feelslike);
@@ -266,15 +267,15 @@ const displayHandler = (function() {
 
       const visibility = document.createElement("div");
       visibility.classList.add("visibility");
-      visibility.textContent = `🌇 Visibility: ${getUnitsString("visibility", data.visibility)}`;
+      visibility.textContent = `Visibility: ${getUnitsString("visibility", data.visibility)}`;
       statistics.insertBefore(visibility, windspeed);
 
       const sunrise = document.createElement("div");
       const sunset = document.createElement("div");
       sunrise.classList.add("sunrise");
       sunset.classList.add("sunset");
-      sunrise.textContent = `🌄 Sunrise: ${data.sunrise}`;
-      sunset.textContent = `🌇 Sunset: ${data.sunset}`;
+      sunrise.textContent = `Sunrise: ${data.sunrise}`;
+      sunset.textContent = `Sunset: ${data.sunset}`;
       statistics.appendChild(sunrise);
       statistics.appendChild(sunset);
     } else {
@@ -287,7 +288,51 @@ const displayHandler = (function() {
     sidebar.appendChild(statistics);
   }
 
-  return { displayDataToScroller, currentDayData, displayDataToHourly, displayDataToSidebar, };
+  function displayDataToNow(data) {
+    const statistics = document.createElement("div");
+    const time = document.createElement("div");
+    const temp = document.createElement("div");
+    const feelslike = document.createElement("div");
+    const conditions = document.createElement("div");
+    const precipitationProb = document.createElement("div");
+    const windspeed = document.createElement("div");
+    const cloudcover = document.createElement("div");
+    const icon = document.createElement("img");
+
+    statistics.classList.add("statistics");
+    time.classList.add("time");
+    temp.classList.add("temp");
+    feelslike.classList.add("feelslike");
+    conditions.classList.add("conditions");
+    precipitationProb.classList.add("precipitation-prob");
+    windspeed.classList.add("windspeed");
+    cloudcover.classList.add("cloudcover");
+
+    time.textContent = `At ${data.time}`;
+    temp.textContent = `Temperature: ${getUnitsString("temperature", data.temp)}`;
+    feelslike.textContent = `Feels Like: ${getUnitsString("temperature", data.feelslike)}`;
+    conditions.textContent = data.conditions;
+    precipitationProb.textContent = `Precipitation: ${getUnitsString("precipitationprob", data.precipprob)}`;
+    windspeed.textContent = `Windspeed: ${getUnitsString("windspeed", data.windspeed)} - ${convertToCompassDirection(data.winddir)}`;
+    cloudcover.textContent = `Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
+
+    import(`./images/${data.icon}.svg`).then(image => {
+      icon.src = image.default;
+    });
+
+    statistics.appendChild(icon);
+    statistics.appendChild(time);
+    statistics.appendChild(conditions);
+    statistics.appendChild(temp);
+    statistics.appendChild(feelslike);
+    statistics.appendChild(precipitationProb);
+    statistics.appendChild(windspeed);
+    statistics.appendChild(cloudcover);
+
+    now.appendChild(statistics);
+  }
+
+  return { displayDataToScroller, currentDayData, displayDataToHourly, displayDataToSidebar, displayDataToNow, };
 })();
 
 document.querySelector("button.submit").addEventListener("click", (evt) => {
@@ -296,9 +341,11 @@ document.querySelector("button.submit").addEventListener("click", (evt) => {
   [...document.querySelector(".am-hours").children].forEach(child => child.remove());
   [...document.querySelector(".pm-hours").children].forEach(child => child.remove());
   [...document.querySelector(".hour-info").children].forEach(child => child.remove());
+  [...document.querySelector(".now").children].forEach(child => child.remove());
   formHandler.getWeatherData().then((data) => {
     console.log(data);
     displayHandler.currentDayData = data.forecast;
     displayHandler.displayDataToScroller(data.forecast);
+    displayHandler.displayDataToNow(data.now);
   });
 });
