@@ -5,14 +5,14 @@ import { retrieveWeatherData, processWeatherData } from "./weather.js";
 
 const formHandler = (function () {
   const locationInput = document.querySelector("#location");
-  const unitInput = document.querySelector("#unit-type");
+  const unitsInput = document.querySelector("#unit-type");
   const submitBtn = document.querySelector("button.submit");
 
   function getWeatherData() {
     submitBtn.setAttribute("disabled", true);
     const promise = retrieveWeatherData(
       locationInput.value,
-      unitInput.value
+      unitsInput.value
     ).then(
       (data) => {
         const processedData = processWeatherData(data);
@@ -27,7 +27,7 @@ const formHandler = (function () {
     return promise;
   }
 
-  return { getWeatherData };
+  return { getWeatherData , locationInput, submitBtn, unitsInput, };
 })();
 
 const displayHandler = (function () {
@@ -160,6 +160,8 @@ const displayHandler = (function () {
           [...sidebar.children].forEach((child) => child.remove());
           displaySideBarAddress(day.address);
           btn.classList.remove("selected");
+          localStorage.removeItem("daySelected");
+          localStorage.removeItem("hourSelected");
         } else {
           [...dayScroller.children].forEach((child) =>
             child.classList.remove("selected")
@@ -167,12 +169,14 @@ const displayHandler = (function () {
           btn.classList.add("selected");
           displayDataToSidebar(day, true);
           displayDataToHourly(day);
+          localStorage.setItem("daySelected", index);
+          localStorage.removeItem("hourSelected");
         }
       });
 
       if (index === daySelected) {
         btn.classList.add("selected");
-        displayDataToSidebar(day, true);
+        displayDataToSidebar(day);
         displayDataToHourly(day, hourSelected);
       }
 
@@ -214,6 +218,7 @@ const displayHandler = (function () {
         if (btn.classList.contains("selected")) {
           displayDataToSidebar(day, true);
           btn.classList.remove("selected");
+          localStorage.removeItem("hourSelected");
         } else {
           [...amHours.children].forEach((child) =>
             child.classList.remove("selected")
@@ -223,6 +228,7 @@ const displayHandler = (function () {
           );
           btn.classList.add("selected");
           displayDataToSidebar(hour);
+          localStorage.setItem("hourSelected", index);
         }
       });
 
@@ -406,20 +412,48 @@ const displayHandler = (function () {
   };
 })();
 
-document.querySelector("button.submit").addEventListener("click", (evt) => {
+formHandler.submitBtn.addEventListener("click", (evt) => {
   evt.preventDefault();
   displayHandler.clearData();
   displayHandler.displayLoader();
 
-  formHandler.getWeatherData().then((data) => {
+  if (evt.isTrusted) {
+    ["data", "location", "daySelected", "hourSelected", "units"].forEach(item => localStorage.removeItem(item));
+
+    formHandler.getWeatherData().then((data) => {
+      displayHandler.clearData();
+      if (data === "Invalid location") {
+        displayHandler.displayInvalid();
+      } else {
+        console.log(data);
+        displayHandler.currentDayData = data.forecast;
+        displayHandler.displayDataToScroller(data.forecast);
+        displayHandler.displayDataToNow(data.now);
+        localStorage.setItem("location", formHandler.locationInput.value);
+        localStorage.setItem("units", formHandler.unitsInput.value);
+        localStorage.setItem("data", JSON.stringify(data));
+      }
+    });
+  } else {
+    const savedLocation = localStorage.getItem("location");
+    const savedUnits = localStorage.getItem("units");
+    let savedDaySelected = localStorage.getItem("daySelected") ?? -1;
+    let savedHourSelected = localStorage.getItem("hourSelected") ?? -1;
+    const savedData = JSON.parse(localStorage.getItem("data"));
+
+    savedDaySelected = +savedDaySelected;
+    savedHourSelected = +savedHourSelected;
+    formHandler.locationInput.value = savedLocation;
+    formHandler.unitsInput.value = savedUnits;
+
+    console.log(savedData);
     displayHandler.clearData();
-    if (data === "Invalid location") {
-      displayHandler.displayInvalid();
-    } else {
-      console.log(data);
-      displayHandler.currentDayData = data.forecast;
-      displayHandler.displayDataToScroller(data.forecast);
-      displayHandler.displayDataToNow(data.now);
-    }
-  });
+    displayHandler.currentDayData = savedData.forecast;
+    displayHandler.displayDataToScroller(savedData.forecast, savedDaySelected, savedHourSelected);
+    displayHandler.displayDataToNow(savedData.now);
+  }
 });
+
+if (localStorage.getItem("location") !== null) {
+  formHandler.submitBtn.dispatchEvent(new Event("click"));
+}
