@@ -183,6 +183,7 @@ div.now {
   grid-area: 3 / 1 / 4 / 2;
   background-color: #f2f2ff;
   border-right: 2px solid black;
+  display: grid;
 
   .statistics {
     display: grid;
@@ -308,5 +309,16 @@ div.selected-day {
         }
       }
     }
+  }
+}
+
+img.loader, img.invalid {
+  place-self: center;
+  width: 50%;
+  height: auto;
+
+  & ~ p {
+    text-align: center;
+    font-weight: 700;
   }
 }

@@ -62,7 +62,7 @@ function processWeatherData(data) {
             cloudcover: hour.cloudcover,
 
             icon: hour.icon,
-          }
+          };
         }),
       };
     }),

@@ -1,4 +1,6 @@
 import "./style.css";
+import loaderImg from "./images/loader.svg";
+import invalidImg from "./images/invalid.svg";
 import { retrieveWeatherData, processWeatherData } from "./weather.js";
 
 const formHandler = (function () {
@@ -8,25 +10,34 @@ const formHandler = (function () {
 
   function getWeatherData() {
     submitBtn.setAttribute("disabled", true);
-    const promise = retrieveWeatherData(locationInput.value, unitInput.value).then((data) => {
-      const processedData = processWeatherData(data);
-      return processedData;
-    });
+    const promise = retrieveWeatherData(
+      locationInput.value,
+      unitInput.value
+    ).then(
+      (data) => {
+        const processedData = processWeatherData(data);
+        return processedData;
+      },
+      (err) => {
+        console.log(err);
+        return "Invalid location";
+      }
+    );
     submitBtn.removeAttribute("disabled");
     return promise;
   }
 
-  return { getWeatherData, };
+  return { getWeatherData };
 })();
 
-const displayHandler = (function() {
+const displayHandler = (function () {
   const dayScroller = document.querySelector("div.day-scroller > div");
   const unitType = document.querySelector("#unit-type");
   const amHours = document.querySelector(".am-hours");
   const pmHours = document.querySelector(".pm-hours");
   const sidebar = document.querySelector(".hour-info");
   const now = document.querySelector(".now");
-  let currentDayData = [];
+  const currentDayData = [];
 
   function getUnitsString(name, measurement) {
     const system = unitType.value;
@@ -42,11 +53,11 @@ const displayHandler = (function() {
         else unit = "cm";
         break;
       case "windspeed":
-        if (system === "us" || system == "uk") unit = "mph";
+        if (system === "us" || system === "uk") unit = "mph";
         else if (system === "base" || system === "metric") unit = "m/s";
         break;
       case "visibility":
-        if (system === "us" || system == "uk") unit = "miles";
+        if (system === "us" || system === "uk") unit = "miles";
         else if (system === "base" || system === "metric") unit = "km";
         break;
       case "pressure":
@@ -62,10 +73,13 @@ const displayHandler = (function() {
   }
 
   function getDateString(datetime) {
-    let dateString = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"][datetime.getDay()];
+    let dateString = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"][
+      datetime.getDay()
+    ];
     dateString += " " + datetime.getDate();
 
-    if (datetime.getDate() >= 11 && datetime.getDate() <= 13) dateString += "th";
+    if (datetime.getDate() >= 11 && datetime.getDate() <= 13)
+      dateString += "th";
     else {
       switch (datetime.getDate() % 10) {
         case 1:
@@ -88,19 +102,25 @@ const displayHandler = (function() {
 
   function convertToCompassDirection(degrees) {
     if (degrees + 22.5 > 360) return "N";
-    else return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.floor((degrees + 22.5) / 45)];
+    else
+      return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][
+        Math.floor((degrees + 22.5) / 45)
+      ];
   }
 
   function displaySideBarAddress(address) {
-    [...sidebar.children].forEach(child => child.remove());
+    [...sidebar.children].forEach((child) => child.remove());
     const h3 = document.createElement("h3");
     h3.classList.add("address");
-    h3.textContent = address.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
+    h3.textContent = address
+      .split(" ")
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(" ");
     sidebar.appendChild(h3);
   }
 
-  function displayDataToScroller(dayData, daySelected=-1, hourSelected=-1) {
-    [...dayScroller.children].forEach(child => child.remove());
+  function displayDataToScroller(dayData, daySelected = -1, hourSelected = -1) {
+    [...dayScroller.children].forEach((child) => child.remove());
 
     displaySideBarAddress(dayData[0].address);
 
@@ -123,26 +143,27 @@ const displayHandler = (function() {
       minTemp.classList.add("low");
       minTemp.setAttribute("title", "low");
 
-
       const datetime = new Date(day.datetime);
       date.textContent = getDateString(datetime);
 
-      minTemp.textContent = getUnitsString("temperature", day.tempmin)
+      minTemp.textContent = getUnitsString("temperature", day.tempmin);
       maxTemp.textContent = getUnitsString("temperature", day.tempmax);
 
-      import(`./images/${day.icon}.svg`).then(image => {
+      import(`./images/icons/${day.icon}.svg`).then((image) => {
         icon.src = image.default;
       });
 
-      btn.addEventListener("click", evt => {
+      btn.addEventListener("click", (evt) => {
         if (btn.classList.contains("selected")) {
-          [...amHours.children].forEach(child => child.remove());
-          [...pmHours.children].forEach(child => child.remove());
-          [...sidebar.children].forEach(child => child.remove());
+          [...amHours.children].forEach((child) => child.remove());
+          [...pmHours.children].forEach((child) => child.remove());
+          [...sidebar.children].forEach((child) => child.remove());
           displaySideBarAddress(day.address);
           btn.classList.remove("selected");
         } else {
-          [...dayScroller.children].forEach(child => child.classList.remove("selected"));
+          [...dayScroller.children].forEach((child) =>
+            child.classList.remove("selected")
+          );
           btn.classList.add("selected");
           displayDataToSidebar(day, true);
           displayDataToHourly(day);
@@ -164,9 +185,9 @@ const displayHandler = (function() {
     });
   }
 
-  function displayDataToHourly(day, hourSelected=-1) {
-    [...amHours.children].forEach(child => child.remove());
-    [...pmHours.children].forEach(child => child.remove());
+  function displayDataToHourly(day, hourSelected = -1) {
+    [...amHours.children].forEach((child) => child.remove());
+    [...pmHours.children].forEach((child) => child.remove());
     day.hours.forEach((hour, index) => {
       const btn = document.createElement("button");
       const icon = document.createElement("img");
@@ -185,17 +206,21 @@ const displayHandler = (function() {
       winddir.textContent = convertToCompassDirection(hour.winddir);
       time.textContent = hour.datetime.split(":").slice(0, 2).join(":");
 
-      import(`./images/${hour.icon}.svg`).then(image => {
+      import(`./images/icons/${hour.icon}.svg`).then((image) => {
         icon.src = image.default;
       });
 
-      btn.addEventListener("click", evt => {
+      btn.addEventListener("click", (evt) => {
         if (btn.classList.contains("selected")) {
           displayDataToSidebar(day, true);
           btn.classList.remove("selected");
         } else {
-          [...amHours.children].forEach(child => child.classList.remove("selected"));
-          [...pmHours.children].forEach(child => child.classList.remove("selected"));
+          [...amHours.children].forEach((child) =>
+            child.classList.remove("selected")
+          );
+          [...pmHours.children].forEach((child) =>
+            child.classList.remove("selected")
+          );
           btn.classList.add("selected");
           displayDataToSidebar(hour);
         }
@@ -216,8 +241,8 @@ const displayHandler = (function() {
     });
   }
 
-  function displayDataToSidebar(data, general=false) {
-    [...sidebar.children].forEach(child => child.remove());
+  function displayDataToSidebar(data, general = false) {
+    [...sidebar.children].forEach((child) => child.remove());
     const statistics = document.createElement("div");
     const temp = document.createElement("div");
     const feelslike = document.createElement("div");
@@ -257,7 +282,6 @@ const displayHandler = (function() {
     statistics.appendChild(snow);
 
     displaySideBarAddress(data.address);
-
 
     if (general) {
       const description = document.createElement("div");
@@ -316,7 +340,7 @@ const displayHandler = (function() {
     windspeed.textContent = `Windspeed: ${getUnitsString("windspeed", data.windspeed)} - ${convertToCompassDirection(data.winddir)}`;
     cloudcover.textContent = `Cloudcover: ${getUnitsString("cloudcover", data.cloudcover)}`;
 
-    import(`./images/${data.icon}.svg`).then(image => {
+    import(`./images/icons/${data.icon}.svg`).then((image) => {
       icon.src = image.default;
     });
 
@@ -332,20 +356,67 @@ const displayHandler = (function() {
     now.appendChild(statistics);
   }
 
-  return { displayDataToScroller, currentDayData, displayDataToHourly, displayDataToSidebar, displayDataToNow, };
+  function displayLoader() {
+    const img = document.createElement("img");
+    img.classList.add("loader");
+    img.src = loaderImg;
+    now.appendChild(img);
+  }
+
+  function displayInvalid() {
+    const img = document.createElement("img");
+    const p = document.createElement("p");
+    img.classList.add("invalid");
+    img.src = invalidImg;
+    p.textContent = "Invalid location";
+    now.appendChild(img);
+    now.appendChild(p);
+  }
+
+  function clearData() {
+    [...document.querySelector(".day-scroller > div").children].forEach(
+      (child) => child.remove()
+    );
+    [...document.querySelector(".am-hours").children].forEach((child) =>
+      child.remove()
+    );
+    [...document.querySelector(".pm-hours").children].forEach((child) =>
+      child.remove()
+    );
+    [...document.querySelector(".hour-info").children].forEach((child) =>
+      child.remove()
+    );
+    [...document.querySelector(".now").children].forEach((child) =>
+      child.remove()
+    );
+  }
+
+  return {
+    displayDataToScroller,
+    currentDayData,
+    displayDataToHourly,
+    displayDataToSidebar,
+    displayDataToNow,
+    displayLoader,
+    displayInvalid,
+    clearData,
+  };
 })();
 
 document.querySelector("button.submit").addEventListener("click", (evt) => {
   evt.preventDefault();
-  [...document.querySelector(".day-scroller > div").children].forEach(child => child.remove());
-  [...document.querySelector(".am-hours").children].forEach(child => child.remove());
-  [...document.querySelector(".pm-hours").children].forEach(child => child.remove());
-  [...document.querySelector(".hour-info").children].forEach(child => child.remove());
-  [...document.querySelector(".now").children].forEach(child => child.remove());
+  displayHandler.clearData();
+  displayHandler.displayLoader();
+
   formHandler.getWeatherData().then((data) => {
-    console.log(data);
-    displayHandler.currentDayData = data.forecast;
-    displayHandler.displayDataToScroller(data.forecast);
-    displayHandler.displayDataToNow(data.now);
+    displayHandler.clearData();
+    if (data === "Invalid location") {
+      displayHandler.displayInvalid();
+    } else {
+      console.log(data);
+      displayHandler.currentDayData = data.forecast;
+      displayHandler.displayDataToScroller(data.forecast);
+      displayHandler.displayDataToNow(data.now);
+    }
   });
 });
