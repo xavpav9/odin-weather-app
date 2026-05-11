@@ -12,8 +12,11 @@
       <h1>Weather App</h1>
       <form method="" action="">
         <div class="location">
-          <label for="temp-type">Location: </label>
-          <input type="text" name="location" id="location">
+          <label for="location">Location: </label>
+          <input list="location-list" type="text" name="location" id="location">
+
+          <datalist id="location-list">
+          </datalist>
         </div>
         <div class="unit-type">
           <label for="unit-type">Unit Type: </label>

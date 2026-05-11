@@ -7,6 +7,8 @@ const formHandler = (function () {
   const locationInput = document.querySelector("#location");
   const unitsInput = document.querySelector("#unit-type");
   const submitBtn = document.querySelector("button.submit");
+  const locationList = document.querySelector("#location-list");
+  const locationListValues = JSON.parse(localStorage.getItem("locationList")) ?? [];
 
   function getWeatherData() {
     submitBtn.setAttribute("disabled", true);
@@ -27,7 +29,23 @@ const formHandler = (function () {
     return promise;
   }
 
-  return { getWeatherData , locationInput, submitBtn, unitsInput, };
+  function updateLocationList(newLocation="") {
+    if (newLocation !== "" && !locationListValues.includes(newLocation)) locationListValues.unshift(newLocation);
+    if (locationListValues.length > 10) locationListValues.pop();
+
+    [...locationList.children].forEach(child => child.remove());
+    locationListValues.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item;
+      locationList.appendChild(option);
+    });
+
+    localStorage.setItem("locationList", JSON.stringify(locationListValues));
+  }
+
+  updateLocationList()
+
+  return { getWeatherData , locationInput, submitBtn, unitsInput, updateLocationList, };
 })();
 
 const displayHandler = (function () {
@@ -154,7 +172,7 @@ const displayHandler = (function () {
       });
 
       btn.addEventListener("click", (evt) => {
-        if (btn.classList.contains("selected")) {
+        if ([...btn.classList].includes("selected")) {
           [...amHours.children].forEach((child) => child.remove());
           [...pmHours.children].forEach((child) => child.remove());
           [...sidebar.children].forEach((child) => child.remove());
@@ -169,7 +187,7 @@ const displayHandler = (function () {
           btn.classList.add("selected");
           displayDataToSidebar(day, true);
           displayDataToHourly(day);
-          localStorage.setItem("daySelected", index);
+          localStorage.setItem("daySelected", JSON.stringify(index));
           localStorage.removeItem("hourSelected");
         }
       });
@@ -215,7 +233,7 @@ const displayHandler = (function () {
       });
 
       btn.addEventListener("click", (evt) => {
-        if (btn.classList.contains("selected")) {
+        if ([...btn.classList].includes("selected")) {
           displayDataToSidebar(day, true);
           btn.classList.remove("selected");
           localStorage.removeItem("hourSelected");
@@ -228,7 +246,7 @@ const displayHandler = (function () {
           );
           btn.classList.add("selected");
           displayDataToSidebar(hour);
-          localStorage.setItem("hourSelected", index);
+          localStorage.setItem("hourSelected", JSON.stringify(index));
         }
       });
 
@@ -429,16 +447,17 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
         displayHandler.currentDayData = data.forecast;
         displayHandler.displayDataToScroller(data.forecast);
         displayHandler.displayDataToNow(data.now);
-        localStorage.setItem("location", formHandler.locationInput.value);
-        localStorage.setItem("units", formHandler.unitsInput.value);
+        localStorage.setItem("location", JSON.stringify(formHandler.locationInput.value));
+        localStorage.setItem("units", JSON.stringify(formHandler.unitsInput.value));
         localStorage.setItem("data", JSON.stringify(data));
+        formHandler.updateLocationList(formHandler.locationInput.value);
       }
     });
   } else {
-    const savedLocation = localStorage.getItem("location");
-    const savedUnits = localStorage.getItem("units");
-    let savedDaySelected = localStorage.getItem("daySelected") ?? -1;
-    let savedHourSelected = localStorage.getItem("hourSelected") ?? -1;
+    const savedLocation = JSON.parse(localStorage.getItem("location"));
+    const savedUnits = JSON.parse(localStorage.getItem("units"));
+    let savedDaySelected = JSON.parse(localStorage.getItem("daySelected")) ?? -1;
+    let savedHourSelected = JSON.parse(localStorage.getItem("hourSelected")) ?? -1;
     const savedData = JSON.parse(localStorage.getItem("data"));
 
     savedDaySelected = +savedDaySelected;
@@ -454,6 +473,6 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
   }
 });
 
-if (localStorage.getItem("location") !== null) {
+if (JSON.parse(localStorage.getItem("location")) !== null) {
   formHandler.submitBtn.dispatchEvent(new Event("click"));
 }
