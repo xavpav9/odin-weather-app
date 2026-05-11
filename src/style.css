@@ -189,6 +189,7 @@ div.now {
     display: grid;
     grid-template: 30px 30px / 1fr 100px;
     grid-auto-rows: 1fr;
+    gap: 2px 1px;
 
     img, .time, .conditions {
       place-self: center;
