@@ -358,9 +358,12 @@ const displayHandler = (function () {
 
   function displayLoader() {
     const img = document.createElement("img");
+    const p = document.createElement("p");
     img.classList.add("loader");
     img.src = loaderImg;
+    p.textContent = "Loading...";
     now.appendChild(img);
+    now.appendChild(p);
   }
 
   function displayInvalid() {
