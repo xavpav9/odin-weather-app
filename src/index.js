@@ -194,7 +194,7 @@ const displayHandler = (function () {
 
       if (index === daySelected) {
         btn.classList.add("selected");
-        displayDataToSidebar(day);
+        displayDataToSidebar(day, true);
         displayDataToHourly(day, hourSelected);
       }
 
