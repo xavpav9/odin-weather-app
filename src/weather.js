@@ -9,9 +9,6 @@ async function retrieveWeatherData(location, units) {
 function processWeatherData(data) {
   return {
     address: data.resolvedAddress,
-    latitude: data.latitude,
-    longitude: data.longitude,
-    description: data.description,
     now: {
       time: data.currentConditions.datetime,
       temp: data.currentConditions.temp,
@@ -34,7 +31,6 @@ function processWeatherData(data) {
         tempmax: day.tempmax,
         feelslike: day.feelslike,
         precipprob: day.precipprob,
-        conditions: day.conditions,
         snow: day.snow,
         visibility: day.visibility,
         pressure: day.pressure,
@@ -46,6 +42,7 @@ function processWeatherData(data) {
         winddir: day.winddir,
 
         icon: day.icon,
+        weekdescription: data.description,
 
         hours: day.hours.map((hour) => {
           return {

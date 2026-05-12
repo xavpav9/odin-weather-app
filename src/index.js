@@ -8,7 +8,8 @@ const formHandler = (function () {
   const unitsInput = document.querySelector("#unit-type");
   const submitBtn = document.querySelector("button.submit");
   const locationList = document.querySelector("#location-list");
-  const locationListValues = JSON.parse(localStorage.getItem("locationList")) ?? [];
+  const locationListValues =
+    JSON.parse(localStorage.getItem("locationList")) ?? [];
 
   function getWeatherData() {
     submitBtn.setAttribute("disabled", true);
@@ -21,7 +22,7 @@ const formHandler = (function () {
         return processedData;
       },
       (err) => {
-        console.log(err);
+        console.warn(err);
         return "Invalid location";
       }
     );
@@ -29,12 +30,13 @@ const formHandler = (function () {
     return promise;
   }
 
-  function updateLocationList(newLocation="") {
-    if (newLocation !== "" && !locationListValues.includes(newLocation)) locationListValues.unshift(newLocation);
+  function updateLocationList(newLocation = "") {
+    if (newLocation !== "" && !locationListValues.includes(newLocation))
+      locationListValues.unshift(newLocation);
     if (locationListValues.length > 10) locationListValues.pop();
 
-    [...locationList.children].forEach(child => child.remove());
-    locationListValues.forEach(item => {
+    [...locationList.children].forEach((child) => child.remove());
+    locationListValues.forEach((item) => {
       const option = document.createElement("option");
       option.value = item;
       locationList.appendChild(option);
@@ -43,9 +45,15 @@ const formHandler = (function () {
     localStorage.setItem("locationList", JSON.stringify(locationListValues));
   }
 
-  updateLocationList()
+  updateLocationList();
 
-  return { getWeatherData , locationInput, submitBtn, unitsInput, updateLocationList, };
+  return {
+    getWeatherData,
+    locationInput,
+    submitBtn,
+    unitsInput,
+    updateLocationList,
+  };
 })();
 
 const displayHandler = (function () {
@@ -126,7 +134,7 @@ const displayHandler = (function () {
       ];
   }
 
-  function displaySideBarAddress(address) {
+  function displaySideBarAddress(address, description = "") {
     [...sidebar.children].forEach((child) => child.remove());
     const h3 = document.createElement("h3");
     h3.classList.add("address");
@@ -135,12 +143,19 @@ const displayHandler = (function () {
       .map((word) => word[0].toUpperCase() + word.slice(1))
       .join(" ");
     sidebar.appendChild(h3);
+
+    if (description !== "") {
+      const div = document.createElement("div");
+      div.classList.add("description");
+      div.textContent = description;
+      sidebar.appendChild(div);
+    }
   }
 
   function displayDataToScroller(dayData, daySelected = -1, hourSelected = -1) {
     [...dayScroller.children].forEach((child) => child.remove());
 
-    displaySideBarAddress(dayData[0].address);
+    displaySideBarAddress(dayData[0].address, dayData[0].weekdescription);
 
     dayData.forEach((day, index) => {
       const btn = document.createElement("button");
@@ -176,7 +191,7 @@ const displayHandler = (function () {
           [...amHours.children].forEach((child) => child.remove());
           [...pmHours.children].forEach((child) => child.remove());
           [...sidebar.children].forEach((child) => child.remove());
-          displaySideBarAddress(day.address);
+          displaySideBarAddress(dayData[0].address, dayData[0].weekdescription);
           btn.classList.remove("selected");
           localStorage.removeItem("daySelected");
           localStorage.removeItem("hourSelected");
@@ -436,19 +451,27 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
   displayHandler.displayLoader();
 
   if (evt.isTrusted) {
-    ["data", "location", "daySelected", "hourSelected", "units"].forEach(item => localStorage.removeItem(item));
+    ["data", "location", "daySelected", "hourSelected", "units"].forEach(
+      (item) => localStorage.removeItem(item)
+    );
 
     formHandler.getWeatherData().then((data) => {
       displayHandler.clearData();
       if (data === "Invalid location") {
         displayHandler.displayInvalid();
       } else {
-        console.log(data);
+        console.info(data);
         displayHandler.currentDayData = data.forecast;
         displayHandler.displayDataToScroller(data.forecast);
         displayHandler.displayDataToNow(data.now);
-        localStorage.setItem("location", JSON.stringify(formHandler.locationInput.value));
-        localStorage.setItem("units", JSON.stringify(formHandler.unitsInput.value));
+        localStorage.setItem(
+          "location",
+          JSON.stringify(formHandler.locationInput.value)
+        );
+        localStorage.setItem(
+          "units",
+          JSON.stringify(formHandler.unitsInput.value)
+        );
         localStorage.setItem("data", JSON.stringify(data));
         formHandler.updateLocationList(formHandler.locationInput.value);
       }
@@ -456,8 +479,10 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
   } else {
     const savedLocation = JSON.parse(localStorage.getItem("location"));
     const savedUnits = JSON.parse(localStorage.getItem("units"));
-    let savedDaySelected = JSON.parse(localStorage.getItem("daySelected")) ?? -1;
-    let savedHourSelected = JSON.parse(localStorage.getItem("hourSelected")) ?? -1;
+    let savedDaySelected =
+      JSON.parse(localStorage.getItem("daySelected")) ?? -1;
+    let savedHourSelected =
+      JSON.parse(localStorage.getItem("hourSelected")) ?? -1;
     const savedData = JSON.parse(localStorage.getItem("data"));
 
     savedDaySelected = +savedDaySelected;
@@ -465,10 +490,14 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
     formHandler.locationInput.value = savedLocation;
     formHandler.unitsInput.value = savedUnits;
 
-    console.log(savedData);
+    console.info(savedData);
     displayHandler.clearData();
     displayHandler.currentDayData = savedData.forecast;
-    displayHandler.displayDataToScroller(savedData.forecast, savedDaySelected, savedHourSelected);
+    displayHandler.displayDataToScroller(
+      savedData.forecast,
+      savedDaySelected,
+      savedHourSelected
+    );
     displayHandler.displayDataToNow(savedData.now);
   }
 });

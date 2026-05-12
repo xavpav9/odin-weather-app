@@ -1,4 +1,6 @@
-*, *::after, *::before {
+*,
+*::after,
+*::before {
   padding: 0px;
   margin: 0px;
   line-height: 1.5;
@@ -25,7 +27,8 @@ body {
   }
 }
 
-button, select {
+button,
+select {
   cursor: pointer;
 }
 
@@ -74,7 +77,8 @@ div.options {
       }
     }
 
-    .location, .unit-type {
+    .location,
+    .unit-type {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -97,7 +101,6 @@ div.options {
       }
     }
   }
-
 }
 
 div.day-scroller {
@@ -108,7 +111,7 @@ div.day-scroller {
   & > div {
     display: flex;
     background-color: white;
-    width: calc(100vw - var(--options-width) - var(--padding)*2);
+    width: calc(100vw - var(--options-width) - var(--padding) * 2);
     scrollbar-width: thin;
     scrollbar-color: blue transparent;
     height: 100%;
@@ -125,7 +128,8 @@ div.day-scroller {
       display: grid;
       grid-template: repeat(4, 1fr) / 1fr;
 
-      img, .date {
+      img,
+      .date {
         justify-self: center;
       }
 
@@ -156,27 +160,55 @@ div.day-scroller {
   }
 }
 
-button.hour, button.day {
+button.hour,
+button.day {
   border: none;
   background-color: white;
   transition: background-color 0.1s;
 
-  &:hover, &:focus { background-color: #efe; }
-  &:focus { outline: none; }
-  &.selected { background-color: #afa; }
+  &:hover,
+  &:focus {
+    background-color: #efe;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &.selected {
+    background-color: #afa;
+  }
 }
 
-
-div.now, div.hour-info {
-  .temp::before { content: "🌡️ "; }
-  .feelslike::before { content: "🌡️ "; }
-  .precipitation-prob::before { content: "🌧️ "; }
-  .snow::before { content: "🌨️ "; }
-  .visibility::before { content: "🌫️ "; }
-  .windspeed::before { content: "🍃 "; }
-  .cloudcover::before { content: "☁️ "; }
-  .sunrise::before { content: "🌄 "; }
-  .sunset::before { content: "🌇 "; }
+div.now,
+div.hour-info {
+  .temp::before {
+    content: "🌡️ ";
+  }
+  .feelslike::before {
+    content: "🌡️ ";
+  }
+  .precipitation-prob::before {
+    content: "🌧️ ";
+  }
+  .snow::before {
+    content: "🌨️ ";
+  }
+  .visibility::before {
+    content: "🌫️ ";
+  }
+  .windspeed::before {
+    content: "🍃 ";
+  }
+  .cloudcover::before {
+    content: "☁️ ";
+  }
+  .sunrise::before {
+    content: "🌄 ";
+  }
+  .sunset::before {
+    content: "🌇 ";
+  }
 }
 
 div.now {
@@ -191,7 +223,9 @@ div.now {
     grid-auto-rows: 1fr;
     gap: 2px 1px;
 
-    img, .time, .conditions {
+    img,
+    .time,
+    .conditions {
       place-self: center;
     }
 
@@ -210,7 +244,11 @@ div.now {
       font-style: italic;
     }
 
-    .temp, .feelslike, .precipitation-prob, .windspeed, .cloudcover {
+    .temp,
+    .feelslike,
+    .precipitation-prob,
+    .windspeed,
+    .cloudcover {
       grid-column: 1 / 3;
     }
   }
@@ -233,7 +271,8 @@ div.selected-day {
       border: 2px outset black;
       background-color: white;
 
-      .am-hours, .pm-hours {
+      .am-hours,
+      .pm-hours {
         display: flex;
 
         button.hour {
@@ -259,12 +298,11 @@ div.selected-day {
         }
       }
 
-      .am-hours { 
+      .am-hours {
         .hour {
           border-bottom: thin solid black;
         }
       }
-      .pm-hours { }
     }
 
     div.hour-info {
@@ -282,14 +320,17 @@ div.selected-day {
         overflow: hidden;
         text-overflow: ellipsis;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           white-space: wrap;
           overflow: auto;
           scrollbar-color: blue transparent;
         }
       }
 
-      .address, .description, .time {
+      .address,
+      .description,
+      .time {
         padding: 0px 8px;
         text-align: center;
       }
@@ -300,7 +341,7 @@ div.selected-day {
 
       .statistics {
         display: grid;
-        grid-template-columns:1fr;
+        grid-template-columns: 1fr;
         grid-auto-rows: 1fr;
         font-size: 0.85rem;
 
@@ -308,15 +349,21 @@ div.selected-day {
           text-align: center;
           background-color: white;
 
-          &:first-child { border-top: 2px solid black; }
-          &:not(:last-child) { border-bottom: 2px solid black; }
+          &:first-child {
+            border-top: 2px solid black;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 2px solid black;
+          }
         }
       }
     }
   }
 }
 
-img.loader, img.invalid {
+img.loader,
+img.invalid {
   place-self: center;
   width: 50%;
   height: auto;
@@ -332,6 +379,7 @@ img.loader, img.invalid {
     max-height: none;
     grid-template: 1fr var(--scroller-height) 1fr / 1fr 1fr;
   }
+
   div.options {
     grid-row: 1 / 2;
     padding-bottom: 30px;
@@ -341,7 +389,7 @@ img.loader, img.invalid {
     grid-area: 2 / 1 / 3 / 3;
 
     & > div {
-      width: calc(100vw - var(--padding)*2);
+      width: calc(100vw - var(--padding) * 2);
     }
   }
 
@@ -376,8 +424,7 @@ img.loader, img.invalid {
     grid-area: 1 / 2 / 2 / 3;
     border-bottom: 2px solid black;
     border-right: none;
-    padding-bottom: 30px;
-    
+
     .statistics {
       grid-template: 30px 30px / 1fr 1fr;
       place-items: center;
@@ -389,6 +436,7 @@ img.loader, img.invalid {
   body {
     grid-template: 1fr 1fr var(--scroller-height) 1fr / 1fr;
   }
+
   div.options {
     grid-row: 1 / 2;
     padding-bottom: 30px;
@@ -404,7 +452,8 @@ img.loader, img.invalid {
 
     & > div {
       .hours {
-        .am-hours, .pm-hours {
+        .am-hours,
+        .pm-hours {
           flex-direction: column;
 
           button.hour {
@@ -426,7 +475,8 @@ img.loader, img.invalid {
     grid-area: 2 / 1 / 3 / 2;
   }
 
-  img.loader, img.invalid {
+  img.loader,
+  img.invalid {
     width: 20%;
   }
 }
