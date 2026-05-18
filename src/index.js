@@ -31,8 +31,8 @@ const formHandler = (function () {
   }
 
   function updateLocationList(newLocation = "") {
-    if (newLocation !== "" && !locationListValues.includes(newLocation))
-      locationListValues.unshift(newLocation);
+    if (newLocation !== "" && !locationListValues.includes(newLocation.toLowerCase().trim()))
+      locationListValues.unshift(newLocation.toLowerCase().trim());
     if (locationListValues.length > 10) locationListValues.pop();
 
     [...locationList.children].forEach((child) => child.remove());
@@ -449,8 +449,9 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
   evt.preventDefault();
   displayHandler.clearData();
   displayHandler.displayLoader();
+  const timeOfRequest = JSON.parse(localStorage.getItem("timeOfRequest"));
 
-  if (evt.isTrusted) {
+  if (evt.isTrusted || (timeOfRequest !== null && timeOfRequest + 15 * 60 * 1000 < Date.now())) { // 15 mins
     ["data", "location", "daySelected", "hourSelected", "units"].forEach(
       (item) => localStorage.removeItem(item)
     );
@@ -473,6 +474,7 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
           JSON.stringify(formHandler.unitsInput.value)
         );
         localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem("timeOfRequest", JSON.stringify(Date.now()));
         formHandler.updateLocationList(formHandler.locationInput.value);
       }
     });
