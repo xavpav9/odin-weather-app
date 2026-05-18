@@ -451,7 +451,7 @@ formHandler.submitBtn.addEventListener("click", (evt) => {
   displayHandler.displayLoader();
   const timeOfRequest = JSON.parse(localStorage.getItem("timeOfRequest"));
 
-  if (evt.isTrusted || (timeOfRequest !== null && timeOfRequest + 15 * 60 * 1000 < Date.now())) { // 15 mins
+  if (evt.isTrusted || (timeOfRequest !== null && timeOfRequest + 1 * 60 * 60 * 1000 < Date.now())) { // After 1hr, refresh request
     ["data", "location", "daySelected", "hourSelected", "units"].forEach(
       (item) => localStorage.removeItem(item)
     );
